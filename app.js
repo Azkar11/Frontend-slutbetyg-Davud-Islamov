@@ -1,110 +1,69 @@
-const apiUrl = "http://www.omdbapi.com/?apikey=b98c6433";
-let debounceTimer; // Variable to hold the debounce timeout
+const apiKey = 'b98c6433'; // Your API key
+const movieListElement = document.getElementById('movie-list');
+const searchInput = document.getElementById('search-input');
+const errorMessage = document.getElementById('error-message');
 
-// Attach input event listener to search field
-document.getElementById("search-input").addEventListener("input", (event) => {
-  const query = event.target.value.trim();
-  if (query.length > 0) {
-    // Clear the previous debounce timer to avoid too many API calls
-    clearTimeout(debounceTimer);
+// Function to fetch movies from the API
+async function fetchMovies(query = '') {
+    const url = `http://www.omdbapi.com/?apikey=${apiKey}&s=${query}&type=movie`;
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
 
-    // Set a new debounce timer
-    debounceTimer = setTimeout(async () => {
-      const movies = await fetchMovies(query);
-      renderMovies(movies);
-    }, 300); // 300ms delay before making the API call
-  } else {
-    // If the input field is empty, clear the movie list
-    document.getElementById("movie-list").innerHTML = "";
-  }
-});
-
-// Fetch movies from OMDb API
-async function fetchMovies(query) {
-  try {
-    const response = await fetch(`${apiUrl}&s=${query}`);
-    const data = await response.json();
-
-    if (data.Response === "True") {
-      return data.Search;
-    } else {
-      return [];
+        if (data.Response === 'True') {
+            displayMovies(data.Search); // Pass the list of movies to display
+            errorMessage.textContent = ''; // Clear any previous error messages
+        } else {
+            errorMessage.textContent = 'Inga filmer hittades eller ett fel inträffade!';
+            movieListElement.innerHTML = ''; // Clear previous movie list
+        }
+    } catch (error) {
+        errorMessage.textContent = 'Nätverksfel. Försök igen senare.';
+        movieListElement.innerHTML = ''; // Clear previous movie list
     }
-  } catch (error) {
-    console.error("Error fetching data", error);
-    alert("Error fetching movie data.");
-    return [];
-  }
 }
 
-// Render movies in the movie list
-function renderMovies(movies) {
-  const movieList = document.getElementById("movie-list");
-  movieList.innerHTML = ""; // Clear previous results
+// Function to display movie cards (with posters)
+function displayMovies(movies) {
+    movieListElement.innerHTML = ''; // Clear the current list
+    movies.forEach(movie => {
+        const movieCard = document.createElement('div');
+        movieCard.classList.add('movie-card');
 
-  if (movies.length === 0) {
-    movieList.innerHTML = "<p>No movies found. Try a different search.</p>";
-  }
+        // Create the movie poster
+        const moviePoster = document.createElement('img');
+        moviePoster.src = movie.Poster !== 'N/A' ? movie.Poster : 'https://via.placeholder.com/200x300?text=No+Image';
+        moviePoster.alt = `Poster for ${movie.Title}`;
 
-  movies.forEach((movie) => {
-    const movieCard = document.createElement("div");
-    movieCard.classList.add("movie-card");
+        // Create movie title and year
+        const movieTitle = document.createElement('div');
+        movieTitle.classList.add('movie-title');
+        movieTitle.textContent = movie.Title;
 
-    movieCard.innerHTML = `
-      <img src="${movie.Poster}" alt="${movie.Title}">
-      <h3>${movie.Title}</h3>
-      <p>Year: ${movie.Year}</p>
-      <button class="favorite-btn" data-imdbid="${movie.imdbID}">Add to Favorites</button>
-    `;
+        const movieYear = document.createElement('div');
+        movieYear.classList.add('movie-year');
+        movieYear.textContent = movie.Year;
 
-    // Favorite button functionality
-    movieCard.querySelector(".favorite-btn").addEventListener("click", () => {
-      addToFavorites(movie);
+        // Append elements to movie card
+        movieCard.appendChild(moviePoster);
+        movieCard.appendChild(movieTitle);
+        movieCard.appendChild(movieYear);
+
+        // Append movie card to movie list
+        movieListElement.appendChild(movieCard);
     });
-
-    movieList.appendChild(movieCard);
-  });
 }
 
-// Add movie to localStorage as a favorite
-function addToFavorites(movie) {
-  let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-  if (!favorites.some((fav) => fav.imdbID === movie.imdbID)) {
-    favorites.push(movie);
-    localStorage.setItem("favorites", JSON.stringify(favorites));
-    alert("Movie added to favorites!");
-  } else {
-    alert("Movie is already in favorites.");
-  }
-}
-
-// Render favorite movies on the favorites page
-window.addEventListener("load", () => {
-  if (window.location.pathname.includes("favorites.html")) {
-    renderFavorites();
-  }
+// Event listener for search input
+searchInput.addEventListener('input', (event) => {
+    const query = event.target.value.trim();
+    fetchMovies(query); // Fetch movies based on search input
 });
 
-// Fetch and display favorite movies
-function renderFavorites() {
-  const favoriteMovies = JSON.parse(localStorage.getItem("favorites")) || [];
-  const favoriteMoviesSection = document.getElementById("favorite-movies");
+// Fetch default movies when the page loads
+fetchMovies();
 
-  if (favoriteMovies.length === 0) {
-    favoriteMoviesSection.innerHTML = "<p>No favorites yet.</p>";
-    return;
-  }
-
-  favoriteMovies.forEach((movie) => {
-    const movieCard = document.createElement("div");
-    movieCard.classList.add("movie-card");
-
-    movieCard.innerHTML = `
-      <img src="${movie.Poster}" alt="${movie.Title}">
-      <h3>${movie.Title}</h3>
-      <p>Year: ${movie.Year}</p>
-    `;
-
-    favoriteMoviesSection.appendChild(movieCard);
-  });
-}
+// Optionally, you can add functionality to display 10 default movies when the page loads
+window.addEventListener('load', () => {
+    fetchMovies();
+});
