@@ -1,28 +1,26 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FilmSamlaren</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FilmSamlaren - Movie Search</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>FilmSamlaren</h1>
-        <input type="text" id="search-input" placeholder="Sök efter filmer..." aria-label="Sök efter filmer">
-    </header>
+  <header>
+    <h1>FilmSamlaren</h1>
+    <input type="text" id="search-input" placeholder="Search for movies..." />
+    <button id="search-btn">Search</button>
+  </header>
 
-    <section id="error-message"></section>
+  <section id="movie-list">
+    <!-- Movies will be dynamically added here -->
+  </section>
 
-    <main>
-        <h2>Filmer</h2>
-        <div id="movie-list"></div>
-    </main>
+  <footer>
+    <a href="favorites.html">Go to Favorites</a>
+  </footer>
 
-    <footer>
-        <p>&copy; 2024 FilmSamlaren. Alla rättigheter förbehållna.</p>
-    </footer>
-
-    <script src="app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
