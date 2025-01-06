@@ -70,10 +70,13 @@ h2 {
     transform: scale(1.05);
 }
 
+/* Förbättring: Fixera affischstorlek */
 .movie-card img {
-    width: 100%;
-    height: auto;
+    width: 150px; /* Fixerad bredd */
+    height: 225px; /* Fixerad höjd */
+    object-fit: cover; /* Anpassar proportioner utan deformation */
     border-radius: 4px;
+    background-color: #ddd; /* Bakgrundsfärg om ingen bild finns */
 }
 
 .movie-title {
@@ -177,4 +180,3 @@ footer p {
 .close-modal:hover {
     background-color: #d32f2f;
 }
-

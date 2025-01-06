@@ -1,135 +1,124 @@
-const apiKey = 'b98c6433'; // Your API key
+const apiKey = 'b98c6433'; // Din API-nyckel
 const movieListElement = document.getElementById('movie-list');
 const searchInput = document.getElementById('search-input');
-const errorMessage = document.getElementById('error-message');
+const errorMessage = document.createElement('div'); // Felmeddelande-element
 let movieData = [];
 
-// Function to fetch movies from the API with pagination (for 100 movies)
-async function fetchMovies(query = '') {
+// Funktion för att hämta filmer från API:t
+async function fetchMovies(query = '', isDefault = false) {
     let url;
-    const totalPages = 10; // 10 pages, each with 10 results = 100 movies
-    
-    try {
-        // If there is a search query, fetch search results from the API
-        if (query) {
-            url = `http://www.omdbapi.com/?apikey=${apiKey}&s=${query}&type=movie`;
-        } else {
-            // Default query to fetch movies when no search term is provided
-            url = `http://www.omdbapi.com/?apikey=${apiKey}&s=movie&type=movie`;
-        }
+    const totalPages = 10; // Begränsa till max 10 sidor för effektivitet
 
+    // Standardfilmer om ingen sökning görs
+    if (isDefault) {
+        url = `http://www.omdbapi.com/?apikey=${apiKey}&s=Avengers&type=movie`; // Standardkategori (t.ex. populära filmer)
+    } else {
+        url = `http://www.omdbapi.com/?apikey=${apiKey}&s=${query}&type=movie`;
+    }
+
+    try {
         const allMovies = [];
-        
-        // Fetch 10 pages of results (10 movies per page)
+
         for (let page = 1; page <= totalPages; page++) {
             const response = await fetch(`${url}&page=${page}`);
             const data = await response.json();
 
             if (data.Response === 'True') {
-                allMovies.push(...data.Search); // Add the movies from this page to the list
+                allMovies.push(...data.Search);
+            } else if (page === 1) {
+                errorMessage.textContent = 'Inga filmer hittades.';
+                movieListElement.innerHTML = '';
+                return;
             }
         }
-        
-        // If we got movies, display them
+
         if (allMovies.length > 0) {
-            movieData = allMovies; // Save the movie data for later use (for click functionality)
+            movieData = allMovies;
             displayMovies(allMovies);
-            errorMessage.textContent = ''; // Clear any previous error messages
-        } else {
-            errorMessage.textContent = 'Inga filmer hittades eller ett fel inträffade!';
-            movieListElement.innerHTML = ''; // Clear any previous movie list
+            errorMessage.textContent = ''; // Rensa eventuella felmeddelanden
         }
     } catch (error) {
+        console.error('Error fetching movies:', error);
         errorMessage.textContent = 'Nätverksfel. Försök igen senare.';
-        movieListElement.innerHTML = ''; // Clear previous movie list
+        movieListElement.innerHTML = '';
     }
 }
 
-// Function to display movie cards (with posters)
+// Funktion för att visa filmkorten
 function displayMovies(movies) {
-    movieListElement.innerHTML = ''; // Clear the current list
-    if (movies && movies.length > 0) {
-        movies.forEach(movie => {
-            const movieCard = document.createElement('div');
-            movieCard.classList.add('movie-card');
+    movieListElement.innerHTML = ''; // Rensa befintlig lista
+    movies.forEach((movie) => {
+        const movieCard = document.createElement('div');
+        movieCard.classList.add('movie-card');
 
-            // Create the movie poster
-            const moviePoster = document.createElement('img');
-            moviePoster.src = movie.Poster === 'N/A' ? 'default-poster.jpg' : movie.Poster; // Fallback if no poster
-            moviePoster.alt = `Poster for ${movie.Title}`;
-            moviePoster.addEventListener('click', () => showMovieDetails(movie.imdbID));
+        const moviePoster = document.createElement('img');
+        moviePoster.src = movie.Poster === 'N/A' ? 'https://via.placeholder.com/150' : movie.Poster;
+        moviePoster.alt = `Poster för ${movie.Title}`;
+        moviePoster.addEventListener('click', () => showMovieDetails(movie.imdbID));
 
-            // Create movie title and year
-            const movieTitle = document.createElement('div');
-            movieTitle.classList.add('movie-title');
-            movieTitle.textContent = movie.Title;
+        const movieTitle = document.createElement('div');
+        movieTitle.classList.add('movie-title');
+        movieTitle.textContent = movie.Title;
 
-            const movieYear = document.createElement('div');
-            movieYear.classList.add('movie-year');
-            movieYear.textContent = movie.Year;
+        const movieYear = document.createElement('div');
+        movieYear.classList.add('movie-year');
+        movieYear.textContent = movie.Year;
 
-            // Append elements to movie card
-            movieCard.appendChild(moviePoster);
-            movieCard.appendChild(movieTitle);
-            movieCard.appendChild(movieYear);
-
-            // Append movie card to movie list
-            movieListElement.appendChild(movieCard);
-        });
-    } else {
-        errorMessage.textContent = 'Ingen film hittades. Försök med ett annat sökord.';
-    }
+        movieCard.append(moviePoster, movieTitle, movieYear);
+        movieListElement.appendChild(movieCard);
+    });
 }
 
-// Function to fetch detailed information about the clicked movie
+// Funktion för att hämta och visa detaljer om en vald film
 async function showMovieDetails(imdbID) {
     try {
         const response = await fetch(`http://www.omdbapi.com/?apikey=${apiKey}&i=${imdbID}`);
         const movie = await response.json();
         if (movie.Response === 'True') {
-            // Display detailed movie info in a modal
             showModal(movie);
         } else {
             errorMessage.textContent = 'Kunde inte hämta filmdetaljer!';
         }
     } catch (error) {
+        console.error('Error fetching movie details:', error);
         errorMessage.textContent = 'Nätverksfel. Försök igen senare.';
     }
 }
 
-// Function to create and show the modal with movie details
+// Funktion för att visa en modal med detaljerad information om en film
 function showModal(movie) {
-    // Create the modal structure
     const modal = document.createElement('div');
     modal.classList.add('movie-modal');
     modal.innerHTML = `
         <div class="modal-content">
             <h2>${movie.Title}</h2>
-            <img src="${movie.Poster !== 'N/A' ? movie.Poster : 'default-poster.jpg'}" alt="Poster for ${movie.Title}" class="movie-modal-img">
-            <p><strong>Year:</strong> ${movie.Year}</p>
+            <img src="${movie.Poster !== 'N/A' ? movie.Poster : 'https://via.placeholder.com/150'}" alt="Poster för ${movie.Title}" class="movie-modal-img">
+            <p><strong>År:</strong> ${movie.Year}</p>
             <p><strong>Genre:</strong> ${movie.Genre}</p>
-            <p><strong>Plot:</strong> ${movie.Plot}</p>
-            <button class="close-modal">Close</button>
+            <p><strong>Handling:</strong> ${movie.Plot}</p>
+            <button class="close-modal">Stäng</button>
         </div>
     `;
 
-    // Add event listener for closing the modal
-    const closeButton = modal.querySelector('.close-modal');
-    closeButton.addEventListener('click', () => {
-        modal.remove();
-    });
-
-    // Append the modal to the body
+    modal.querySelector('.close-modal').addEventListener('click', () => modal.remove());
     document.body.appendChild(modal);
 }
 
-// Event listener for search input
+// Lägg till debounce för sökfältet
+let debounceTimer;
 searchInput.addEventListener('input', (event) => {
-    const query = event.target.value.trim();
-    fetchMovies(query); // Fetch movies based on search input
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+        const query = event.target.value.trim();
+        if (query) {
+            fetchMovies(query); // Hämta filmer baserat på sökningen
+        } else {
+            fetchMovies('', true); // Visa standardfilmer igen om fältet är tomt
+        }
+    }, 300); // Vänta 300ms innan API-anropet görs
 });
 
-// Fetch default movies when the page loads
+// Visa standardfilmer vid sidladdning
 window.addEventListener('load', () => {
-    fetchMovies(); // This will fetch a default list of 100 movies when the page loads
+    fetchMovies('', true); // Hämta en förinställd lista med populära filmer
 });
