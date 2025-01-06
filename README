@@ -1,51 +1,68 @@
-README för FilmSamlaren
+# README för FilmSamlaren
 
-Välkommen till FilmSamlaren!
+## Välkommen till FilmSamlaren!
 Denna webbplats låter dig söka efter filmer, visa detaljer om dem och spara dina favoriter för senare. Nedan följer en guide för att navigera på webbplatsen.
-Hur du navigerar på webbplatsen
 
-    Startsida
-        När du öppnar webbplatsen landar du på startsidan. Här hittar du:
-            En sökruta där du kan skriva in namnet på en film.
-            En sökknapp som visar resultaten baserat på din sökning.
-            En lista med filmer som visas dynamiskt när du söker eller laddar startsidan.
+---
 
-    Söka efter filmer
-        Skriv in ett filmtitel eller sökord i sökrutan. Exempel: "Inception".
-        Klicka på "Sök" eller tryck på Enter.
-        Resultaten visas som en lista med filmkort. Varje filmkort innehåller:
-            En poster av filmen.
-            Filmens titel.
-            Filmens utgivningsår.
+## Hur du navigerar på webbplatsen
 
-    Visa detaljer om en film
-        Klicka på filmens poster för att se detaljerad information.
-        Ett fönster (modal) visas med följande information:
-            Titel.
-            Genre.
-            Handling.
-            År.
-        Stäng modalen genom att klicka på knappen "Stäng".
+### Startsida
+När du öppnar webbplatsen landar du på startsidan. Här hittar du:
+- En sökruta där du kan skriva in namnet på en film.
+- En sökknapp som visar resultaten baserat på din sökning.
+- En lista med filmer som visas dynamiskt när du söker eller laddar startsidan.
 
-    Favoriter
-        Klicka på länken "Gå till Favoriter" längst ner i sidfoten.
-        Här kan du se och hantera dina sparade favoritfilmer (denna funktion kräver vidare utveckling).
+### Söka efter filmer
+1. Skriv in ett filmtitel eller sökord i sökrutan. Exempel: "Inception".
+2. Klicka på "Sök" eller tryck på **Enter**.
+3. Resultaten visas som en lista med filmkort. Varje filmkort innehåller:
+    - En poster av filmen.
+    - Filmens titel.
+    - Filmens utgivningsår.
 
-Övriga funktioner
+### Visa detaljer om en film
+1. Klicka på filmens poster för att se detaljerad information.
+2. Ett fönster (modal) visas med följande information:
+    - Titel.
+    - Genre.
+    - Handling.
+    - År.
+3. Stäng modalen genom att klicka på knappen **"Stäng"**.
 
-    Responsiv design:
-    Webbplatsen anpassar sig för olika enheter, inklusive mobiltelefoner och surfplattor.
+### Favoriter
+1. Klicka på länken **"Gå till Favoriter"** längst ner i sidfoten.
+2. Här kan du se och hantera dina sparade favoritfilmer (denna funktion kräver vidare utveckling).
 
-    Felhantering:
-        Om det inte hittas några filmer visas ett felmeddelande. Exempel: "Ingen film hittades. Försök med ett annat sökord."
-        Vid nätverksfel visas meddelandet: "Nätverksfel. Försök igen senare."
+---
 
-    Förvalda filmer:
-    Om du inte skriver något i sökrutan visas en lista med populära filmer.
+## Övriga funktioner
 
-Teknologi som används
+### Responsiv design
+Webbplatsen anpassar sig för olika enheter, inklusive mobiltelefoner och surfplattor.
 
-    HTML5: Strukturen för webbplatsen.
-    CSS3: Stilmallar för att skapa en attraktiv och responsiv design.
-    JavaScript (ES6): Logiken för att hämta och visa filmer från OMDb API.
-    OMDb API: Extern tjänst för att hämta information om filmer.
+### Felhantering
+- Om det inte hittas några filmer visas ett felmeddelande. Exempel: 
+  - **"Ingen film hittades. Försök med ett annat sökord."**
+- Vid nätverksfel visas meddelandet:
+  - **"Nätverksfel. Försök igen senare."**
+
+### Förvalda filmer
+Om du inte skriver något i sökrutan visas en lista med populära filmer.
+
+---
+
+## Teknologi som används
+
+- **HTML5**: Strukturen för webbplatsen.
+- **CSS3**: Stilmallar för att skapa en attraktiv och responsiv design.
+- **JavaScript (ES6)**: Logiken för att hämta och visa filmer från OMDb API.
+- **OMDb API**: Extern tjänst för att hämta information om filmer.
+
+---
+
+## Installation
+
+1. Klona repot:
+   ```bash
+   git clone https://github.com/username/filmsamlaren.git
