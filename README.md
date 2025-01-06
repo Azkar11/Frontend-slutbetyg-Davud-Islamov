@@ -61,6 +61,24 @@ Om du inte skriver något i sökrutan visas en lista med populära filmer.
 
 ---
 
+## Uppfyllande av krav
+
+### JSON
+Filmer hämtas och visas genom JSON-formatet via OMDb API. Sökresultaten och filmens detaljer bearbetas och visas dynamiskt på webbplatsen.
+
+### HTTP/HTTPS
+Webbplatsen gör HTTP/HTTPS-förfrågningar till OMDb API för att hämta filmdata. Alla API-anrop sker över en säker HTTPS-anslutning, vilket säkerställer att datan är skyddad.
+
+### Asynkronitet
+För att hämta filmer utan att blockera användarens interaktion använder vi asynkrona funktioner (`async`/`await`) och `fetch()` för att kommunicera med OMDb API och visa resultaten dynamiskt.
+
+### UX/UI
+Webbplatsens användargränssnitt (UI) är responsivt och användarvänligt, vilket gör att den fungerar bra på både datorer och mobila enheter. Den innehåller interaktiva element som filmkort, modalfönster för detaljer och felhantering som informerar användaren om resultat eller nätverksproblem.
+
+### Figma mockup: ![figma mockup](<Figma mockuop.png>)
+
+---
+
 ## Installation
 
 1. Klona repot:
